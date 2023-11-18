@@ -53,18 +53,53 @@ EOL
       sudo systemctl restart bind9
     SHELL
   end
-# Configuração da VM Apache
-  config.vm.define "web" do |web|
-    web.vm.box = "ubuntu/focal64"
-    web.vm.network "forwarded_port", guest: 80, host: 8080
-    web.vm.hostname = "web"
 
-    web.vm.provision "shell", inline: <<-SHELL
+  # Configuração da VM WEB
+    config.vm.define "web" do |web|
+      web.vm.box = "ubuntu/focal64"
+      web.vm.network "forwarded_port", guest: 80, host: 8080
+      web.vm.hostname = "web"
+
+      web.vm.provision "shell", inline: <<-SHELL
+        sudo apt-get update
+        sudo apt-get install -y apache2
+        echo "<html><body><h1>Hello from Apache on Vagrant!</h1></body></html>" | sudo tee /var/www/html/index.html
+        sudo systemctl enable apache2
+        sudo systemctl start apache2
+      SHELL
+    end
+
+  # Configuração da VM FTP
+  config.vm.define "ftp" do |ftp|
+    ftp.vm.box = "ubuntu/focal64"
+    ftp.vm.network "forwarded_port", guest: 21, host: 2121
+    ftp.vm.network "forwarded_port", guest: 21, host: 21
+    ftp.vm.network "forwarded_port", guest: 20000, host: 20000
+    ftp.vm.network "forwarded_port", guest: 20001, host: 20001
+
+    ftp.vm.hostname = "ftp"
+
+    ftp.vm.provision "shell", inline: <<-SHELL
       sudo apt-get update
-      sudo apt-get install -y apache2
-      echo "<html><body><h1>Hello from Apache on Vagrant!</h1></body></html>" | sudo tee /var/www/html/index.html
-      sudo systemctl enable apache2
-      sudo systemctl start apache2
+      sudo apt-get install -y docker.io
+      sudo usermod -aG docker vagrant
+      sudo systemctl enable docker
+      sudo systemctl start docker
+      sudo docker pull fauria/vsftpd
+      sudo docker run -d --name ftp -p 2121:21 -v /vagrant/ftp:/home/vsftpd --restart always fauria/vsftpd
+    SHELL
+  end
+
+  # Configuração da VM NFS (Servidor)
+  config.vm.define "nfs" do |nfs|
+    nfs.vm.box = "ubuntu/focal64"
+    nfs.vm.network "private_network", type: "dhcp"
+    nfs.vm.hostname = "nfs"
+    nfs.vm.provision "shell", inline: <<-SHELL
+      sudo apt-get update
+      sudo apt-get install -y nfs-kernel-server
+      sudo systemctl enable nfs-kernel-server
+      sudo systemctl start nfs-kernel-server
     SHELL
   end
 end
