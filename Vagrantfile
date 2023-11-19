@@ -94,6 +94,11 @@ EOL
       sudo usermod -aG docker vagrant
       sudo systemctl enable docker
       sudo systemctl start docker
+
+      # Remova o contêiner existente, se houver
+      sudo docker stop ftp || true
+      sudo docker rm ftp || true
+
       sudo docker pull fauria/vsftpd
       sudo docker run -d --name ftp -p 2121:21 -v /vagrant/ftp:/home/vsftpd --restart always fauria/vsftpd
     SHELL
