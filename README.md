@@ -1,4 +1,4 @@
-#Projeto Final de Administração de Redes de Computadores
+# Projeto Final de Administração de Redes de Computadores
 Valor: 6,5 Pontos
 Documentação: 4,5 Pontos
 Apresentação: 2 Pontos
@@ -33,7 +33,7 @@ Implemente um servidor FTP (por exemplo, vsftpd) para permitir a transferência 
 
 Configure um servidor NFS para compartilhar diretórios e arquivos entre máquinas na rede. Valor: 1 Ponto
 
-# Teste
+## Teste
     VM DHCP:
         Acesse a VM DHCP com vagrant ssh dhcp.
         Execute sudo docker logs dhcp para verificar os logs do contêiner DHCP.
@@ -58,3 +58,16 @@ Configure um servidor NFS para compartilhar diretórios e arquivos entre máquin
         Acesse a VM NFS com vagrant ssh nfs.
         Execute sudo systemctl status nfs-kernel-server para verificar o status do serviço NFS.
         Execute showmount -e localhost para verificar se há compartilhamentos NFS configurados.
+
+## Configuração do Ambiente com Vagrant
+
+O ambiente é configurado utilizando o Vagrant para provisionar máquinas virtuais com diferentes serviços. A seguir, detalhamos a configuração de cada máquina no Vagrantfile.
+Máquina DHCP
+
+A máquina DHCP fornece endereços IP automaticamente para os dispositivos na rede. Utilizamos um contêiner Docker para executar o serviço DHCP.
+
+A máquina DNS resolve nomes de domínio dentro da rede. Configuramos o BIND9 para atender a essa finalidade.
+
+A máquina WEB hospeda um servidor Apache para fornecer serviços de hospedagem de sites internos.
+
+A máquina FTP implementa um servidor FTP (vsftpd) para permitir a transferência de arquivos na rede.
