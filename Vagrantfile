@@ -11,7 +11,16 @@ Vagrant.configure("2") do |config|
       sudo usermod -aG docker vagrant
       sudo systemctl enable docker
       sudo systemctl start docker
-      sudo docker run -d --name dhcp --network host -v /vagrant/dhcpd.conf:/etc/dhcp/dhcpd.conf -v "$(pwd)/data:/data" networkboot/dhcpd:latest
+
+      # Remova o contêiner existente, se houver
+      sudo docker stop dhcp || true
+      sudo docker rm dhcp || true
+
+      # Baixe uma imagem diferente do contêiner DHCP (pode substituir por outra de sua escolha)
+      sudo docker pull networkboot/dhcpd
+
+      # Crie o novo contêiner, montando o diretório /data
+      sudo docker run -d --name dhcp --network host -v "$(pwd):/data" networkboot/dhcpd
     SHELL
   end
 

@@ -32,3 +32,29 @@ Implemente um servidor FTP (por exemplo, vsftpd) para permitir a transferência 
 
 
 Configure um servidor NFS para compartilhar diretórios e arquivos entre máquinas na rede. Valor: 1 Ponto
+
+# Teste
+    VM DHCP:
+        Acesse a VM DHCP com vagrant ssh dhcp.
+        Execute sudo docker logs dhcp para verificar os logs do contêiner DHCP.
+        Verifique se as configurações do DHCP estão corretas no arquivo dhcpd.conf e se o contêiner DHCP está em execução.
+
+    VM DNS:
+        Acesse a VM DNS com vagrant ssh dns.
+        Execute sudo systemctl status bind9 para verificar o status do serviço BIND9.
+        Verifique os logs do BIND9 em /var/log/syslog ou /var/log/bind/ para mensagens de erro ou informações.
+
+    VM WEB (Apache):
+        Acesse a VM WEB com vagrant ssh web.
+        Execute sudo systemctl status apache2 para verificar o status do serviço Apache.
+        Abra um navegador e acesse http://localhost:8080 para verificar se a página "Hello from Apache on Vagrant!" está sendo exibida.
+
+    VM FTP:
+        Acesse a VM FTP com vagrant ssh ftp.
+        Execute sudo docker logs ftp para verificar os logs do contêiner FTP.
+        Use um cliente FTP (por exemplo, FileZilla) para se conectar ao servidor FTP na máquina host usando as portas 2121, 21, 20000 e 20001.
+
+    VM NFS (Servidor):
+        Acesse a VM NFS com vagrant ssh nfs.
+        Execute sudo systemctl status nfs-kernel-server para verificar o status do serviço NFS.
+        Execute showmount -e localhost para verificar se há compartilhamentos NFS configurados.
