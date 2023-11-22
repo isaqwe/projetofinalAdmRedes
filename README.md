@@ -24,7 +24,7 @@ Implemente um servidor FTP (por exemplo, vsftpd) para permitir a transferência 
 Configure um servidor NFS para compartilhar diretórios e arquivos entre máquinas na rede. Valor: 1 Ponto
 
 
-#Projeto de Rede Empresarial - Documentação
+# Projeto de Rede Empresarial - Documentação
 ## 1. Introdução
     Objetivo do Projeto
     Escopo do Trabalho
