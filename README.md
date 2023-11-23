@@ -26,9 +26,94 @@ Configure um servidor NFS para compartilhar diretórios e arquivos entre máquin
 
 # Projeto de Rede Empresarial - Documentação
 ## 1. Introdução
-    Objetivo do Projeto
-    Escopo do Trabalho
-    Tecnologias Utilizadas
+    OBJETIVO:
+        O objetivo deste projeto é capacitar os participantes a projetar, implementar e gerenciar uma rede empresarial eficiente, utilizando tecnologias Linux e serviços essenciais. A ênfase na automação (Vagrant e Docker) e nos testes extensivos visa garantir uma implementação robusta e funcional dos serviços propostos, contribuindo para a formação prática em administração de redes de computadores.
+    ESCOPO:
+        O escopo deste projeto abrange o design, implementação e gerenciamento de uma rede empresarial utilizando tecnologia Linux. Os principais elementos incluídos no escopo são:
+    1. Design da Rede
+
+    Topologia de Rede: Definição da estrutura física e lógica da rede, identificando dispositivos como roteador, switches e servidores.
+
+    Segmentação de Sub-Redes: Divisão da rede em sub-redes para organização e segurança, incluindo Sub-Rede 1 (dispositivos), Sub-Rede 2 (servidores DNS, Web, FTP) e Sub-Rede 3 (NFS).
+
+    2. Serviços a serem Implementados
+        2.1. Servidor DHCP
+
+    Atribuição dinâmica de endereços IP para dispositivos na Sub-Rede 1.
+    Configuração da faixa de IP, tempo de concessão e outras configurações relacionadas.
+
+    2.2. Servidor DNS
+
+    Resolução de nomes de domínio internos.
+    Configuração de registros DNS, como A, CNAME, MX, etc.
+    Configuração de zonas DNS conforme necessário.
+
+    2.3. Servidor Web (Apache ou Nginx)
+
+    Hospedagem de sites internos.
+    Configuração do servidor web escolhido.
+    Definição de diretórios de hospedagem e configuração de virtual hosts.
+
+    2.4. Servidor FTP (vsftpd)
+
+    Transferência de arquivos na rede.
+    Configuração do servidor FTP com foco em segurança.
+    Definição de diretórios permitidos para transferência.
+
+    2.5. Servidor NFS
+
+    Compartilhamento de diretórios e arquivos entre máquinas na rede.
+    Configuração do servidor NFS.
+    Definição de configurações de exportação de diretórios e permissões.
+
+    3. Implementação
+
+    Utilização do Vagrant para criar máquinas virtuais representando cada servidor.
+
+    Utilização do Docker para implantar aplicativos em contêineres, conforme aplicável.
+
+    4. Testes Extensivos
+
+    Realização de testes de funcionalidade para cada serviço configurado.
+
+    Realização de testes de integração para garantir a comunicação eficiente entre os serviços.
+
+    5. Documentação no GIT
+
+    Criação de um repositório GIT contendo toda a documentação do processo.
+
+    Inclusão de scripts de configuração para cada serviço.
+
+    Anotações detalhadas sobre as decisões de configuração e ajustes realizados durante o projeto.
+
+    6. Apresentação
+
+    Comunicação efetiva do projeto, destacando escolhas de design, implementação e resultados dos testes.
+        Linux:
+        O ambiente de rede é baseado em tecnologia Linux, indicando que os servidores e serviços serão configurados em sistemas operacionais Linux.
+
+    Vagrant:
+        Utilizado para criar máquinas virtuais, permitindo a replicação do ambiente de rede de maneira rápida e consistente.
+
+    Docker:
+        Empregado para implantar aplicativos em contêineres. Oferece uma abordagem leve e eficiente para garantir a portabilidade e consistência dos serviços.
+
+    DHCP (Dynamic Host Configuration Protocol):
+        Implementado como um serviço para atribuição dinâmica de endereços IP na Sub-Rede 1.
+
+    DNS (Domain Name System):
+        Configurado como um serviço para a resolução de nomes de domínio internos, incluindo a configuração de registros DNS como A, CNAME, MX, etc.
+
+    Servidor Web (Apache ou Nginx):
+        Escolhido entre Apache ou Nginx para hospedar sites internos, com configuração específica para diretórios de hospedagem e virtual hosts.
+
+    FTP (vsftpd):
+        Implementado como um serviço FTP para permitir a transferência de arquivos na rede, com foco em segurança e definição de diretórios permitidos.
+
+    NFS (Network File System):
+        Configurado como um serviço para compartilhar diretórios e arquivos entre máquinas na rede, com definição de configurações de exportação de diretórios e permissões.
+
+    Essas tecnologias foram escolhidas para criar um ambiente Linux eficiente, automatizado e altamente funcional, conforme as exigências do projeto. O uso de Vagrant e Docker também facilita a replicação do ambiente em diferentes cenários, garantindo consistência e facilitando o gerenciamento do projeto.
 
 ## 2. Topologia de Rede
     Descrição Geral da Topologia
