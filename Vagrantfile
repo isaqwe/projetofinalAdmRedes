@@ -30,7 +30,6 @@ Vagrant.configure("2") do |config|
   # Configuração da VM DNS
   config.vm.define "dns" do |dns|
     dns.vm.box = "ubuntu/focal64"
-    dns.vm.network "private_network", type: "dhcp"
     dns.vm.network "forwarded_port", guest: 53, host: 53, protocol: "udp"
     dns.vm.hostname = "dns"
 
