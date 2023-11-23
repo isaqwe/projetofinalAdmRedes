@@ -1,0 +1,10 @@
+.vagrant/machines/dhcp/virtualbox/action_provision
+.vagrant/machines/dhcp/virtualbox/action_set_name
+.vagrant/machines/dhcp/virtualbox/box_meta
+.vagrant/machines/dhcp/virtualbox/creator_uid
+.vagrant/machines/dhcp/virtualbox/id
+.vagrant/machines/dhcp/virtualbox/index_uuid
+.vagrant/machines/dhcp/virtualbox/private_key
+.vagrant/machines/dhcp/virtualbox/synced_folders
+.vagrant/machines/dhcp/virtualbox/vagrant_cwd
+.vagrant/rgloader/loader.rb
