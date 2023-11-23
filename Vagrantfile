@@ -110,7 +110,6 @@ EOL
   # Configuração da VM NFS (Servidor)
   config.vm.define "nfs" do |nfs|
     nfs.vm.box = "ubuntu/focal64"
-    nfs.vm.network "private_network", type: "dhcp"
     nfs.vm.hostname = "nfs"
     nfs.vm.provision "shell", inline: <<-SHELL
       sudo apt-get update
