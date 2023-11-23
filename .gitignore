@@ -8,3 +8,12 @@
 .vagrant/machines/dhcp/virtualbox/synced_folders
 .vagrant/machines/dhcp/virtualbox/vagrant_cwd
 .vagrant/rgloader/loader.rb
+.vagrant/machines/ftp/virtualbox/action_provision
+.vagrant/machines/ftp/virtualbox/action_set_name
+.vagrant/machines/ftp/virtualbox/box_meta
+.vagrant/machines/ftp/virtualbox/creator_uid
+.vagrant/machines/ftp/virtualbox/id
+.vagrant/machines/ftp/virtualbox/index_uuid
+.vagrant/machines/ftp/virtualbox/private_key
+.vagrant/machines/ftp/virtualbox/synced_folders
+.vagrant/machines/ftp/virtualbox/vagrant_cwd
