@@ -125,13 +125,9 @@ Essas tecnologias foram escolhidas para criar um ambiente Linux eficiente, autom
 ### 2. Topologia de Rede
 
 **Descrição Geral da Topologia**
- A topologia de rede utilizada no projeto foi a topologia estrela, onde dentro da rede 
+ A topologia de rede utilizada no projeto foi a topologia estrela, onde dentro da rede a maquina virtual "dhcp" forcence o serviço de DHCP para todas as maquinas restantes, assim possibilitando elas se localizarem todas em uma mesma rede privada.
 **Segmentação de Sub-redes**
-   - Sub-rede para DHCP
-   - Sub-rede para DNS
-   - Sub-rede para Web
-   - Sub-rede para FTP
-   - Sub-rede para NFS
+-  Seguindo de uma rede empresarial, foi realizada a divisão da rede em 2 partes, para que tennha acesso aos servições.
 
 ### 4. Serviços Implementados
 
