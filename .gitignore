@@ -17,3 +17,4 @@
 .vagrant/machines/ftp/virtualbox/private_key
 .vagrant/machines/ftp/virtualbox/synced_folders
 .vagrant/machines/ftp/virtualbox/vagrant_cwd
+.vagrant
