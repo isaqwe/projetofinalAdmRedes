@@ -2,7 +2,7 @@ Vagrant.configure("2") do |config|
   # Configuração da VM DHCP
   config.vm.define "dhcp" do |dhcp|
     dhcp.vm.box = "ubuntu/focal64"
-    dhcp.vm.network "private_network", type: "dhcp"
+    dhcp.vm.network "private_network", ip:"192.168.56.10"
     dhcp.vm.hostname = "dhcp"
     
     dhcp.vm.provision "shell", inline: <<-SHELL
@@ -84,15 +84,34 @@ end
   # Configuração da VM WEB
     config.vm.define "web" do |web|
       web.vm.box = "ubuntu/focal64"
+      web.vm.network "private_network", type: "dhcp"
       web.vm.network "forwarded_port", guest: 80, host: 8080
       web.vm.hostname = "web"
 
       web.vm.provision "shell", inline: <<-SHELL
-        sudo apt-get update
-        sudo apt-get install -y apache2
-        echo "<html><body><h1>Hello from Apache on Vagrant!</h1></body></html>" | sudo tee /var/www/html/index.html
-        sudo systemctl enable apache2
-        sudo systemctl start apache2
+    sudo apt-get update
+
+    # Instala o Docker
+    sudo apt-get install -y docker.io
+
+    # Adiciona o usuário 'vagrant' ao grupo 'docker'
+    sudo usermod -aG docker vagrant
+
+    # Puxa a imagem do Apache
+    docker pull httpd
+
+    # Executa o contêiner Apache em modo daemon
+    #docker run -d --name web -p 8080:80 httpd
+    docker run -dit --name web -p 8080:80 -v "$PWD":/usr/local/apache2/htdocs/ httpd:2.4
+
+
+
+  # Adiciona uma mensagem de exemplo no index.html dentro do contêiner Apache
+  echo "<html><body><h1>Hello from Apache on Vagrant!</h1></body></html>" | docker exec -i web tee /usr/local/apache2/htdocs/index.html
+  echo "ServerName localhost" | docker exec -i web tee -a /usr/local/apache2/conf/httpd.conf
+
+    # Exibe os logs do contêiner (opcional)
+    docker logs web
       SHELL
     end
 
