@@ -98,10 +98,10 @@ end
 
     # Puxa a imagem do Apache
     docker pull httpd
-    docker run -d --name web httpd
+    ##docker run -d --name web httpd
 
     # Executa o contêiner Apache em modo daemon
-    #docker run -d --name web -p 8080:80 httpd
+    docker run -d --name web -p 8080:80 httpd
     #docker run -dit --name web -p 8080:80 -v "$PWD":/usr/local/apache2/htdocs/ httpd:2.4
 
 
