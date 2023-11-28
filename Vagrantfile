@@ -98,19 +98,20 @@ end
 
     # Puxa a imagem do Apache
     docker pull httpd
+    docker run -d --name web httpd
 
     # Executa o contêiner Apache em modo daemon
     #docker run -d --name web -p 8080:80 httpd
-    docker run -dit --name web -p 8080:80 -v "$PWD":/usr/local/apache2/htdocs/ httpd:2.4
+    #docker run -dit --name web -p 8080:80 -v "$PWD":/usr/local/apache2/htdocs/ httpd:2.4
 
 
 
   # Adiciona uma mensagem de exemplo no index.html dentro do contêiner Apache
-  echo "<html><body><h1>Hello from Apache on Vagrant!</h1></body></html>" | docker exec -i web tee /usr/local/apache2/htdocs/index.html
-  echo "ServerName localhost" | docker exec -i web tee -a /usr/local/apache2/conf/httpd.conf
+  #echo "<html><body><h1>Hello from Apache on Vagrant!</h1></body></html>" | docker exec -i web tee /usr/local/apache2/htdocs/index.html
+  #echo "ServerName localhost" | docker exec -i web tee -a /usr/local/apache2/conf/httpd.conf
 
     # Exibe os logs do contêiner (opcional)
-    docker logs web
+    #docker logs web
       SHELL
     end
 
