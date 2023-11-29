@@ -142,11 +142,26 @@ end
   config.vm.define "nfs" do |nfs|
     nfs.vm.box = "ubuntu/focal64"
     nfs.vm.hostname = "nfs"
+    nfs.vm.network "private_network", type:"dhcp"
+    nfs.vm.network "forwarded_port", guest: 2049, host: 2049
+    nfs.vm.synced_folder "./nfs-share", "/vagrant/nfs-share"
     nfs.vm.provision "shell", inline: <<-SHELL
       sudo apt-get update
-      sudo apt-get install -y nfs-kernel-server
-      sudo systemctl enable nfs-kernel-server
-      sudo systemctl start nfs-kernel-server
+      sudo apt-get install -y docker.io
+      sudo usermod -aG docker vagrant
+      sudo systemctl enable docker
+      sudo systemctl start docker
+      ## remover container se existir
+      sudo docker stop nfs-server || true
+      sudo docker rm nfs-server || true
+      sudo docker pull itsthenetwork/nfs-server-alpine
+      sudo docker run -id --name nfs-server --privileged -v /path/to/vagrant/project/nfs-share:/export -e SHARED_DIRECTORY=/export -p 2049:2049/tcp -p 2049:2049/udp itsthenetwork/nfs-server-alpine /bin/sh
+      
+
+
+      #sudo docker run -d --name nfs-server --privileged -v /vagrant/nfs-share:/export -e SHARED_DIRECTORY=/export -p 2049:2049/tcp -p 2049:2049/udp itsthenetwork/nfs-server-alpine /bin/sh -c "mkdir -p /export && /usr/bin/nfsd.sh"
+
+      #sudo docker run -d --name nfs-server --privileged -v /vagrant/nfs-share:/export -e SHARED_DIRECTORY=/export -p 2049:2049/tcp -p 2049:2049/udp itsthenetwork/nfs-server-alpine
     SHELL
   end
 end
