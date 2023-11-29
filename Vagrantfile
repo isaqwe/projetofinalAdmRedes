@@ -97,11 +97,11 @@ end
     sudo usermod -aG docker vagrant
 
     # Puxa a imagem do Apache
-    docker pull httpd
+   sudo docker pull httpd
     ##docker run -d --name web httpd
 
     # Executa o contêiner Apache em modo daemon
-    docker run -d --name web -p 8080:80 httpd
+    sudo docker run -d --name web -p 8080:80 httpd
     #docker run -dit --name web -p 8080:80 -v "$PWD":/usr/local/apache2/htdocs/ httpd:2.4
 
 
@@ -118,15 +118,12 @@ end
   # Configuração da VM FTP
   config.vm.define "ftp" do |ftp|
     ftp.vm.box = "ubuntu/focal64"
-    ftp.vm.network "forwarded_port", guest: 21, host: 2121
-    ftp.vm.network "forwarded_port", guest: 21, host: 21
-    ftp.vm.network "forwarded_port", guest: 20000, host: 20000
-    ftp.vm.network "forwarded_port", guest: 20001, host: 20001
-
+    ftp.vm.network "private_network", type: "dhcp"
     ftp.vm.hostname = "ftp"
 
     ftp.vm.provision "shell", inline: <<-SHELL
       sudo apt-get update
+      sudo apt-get upgrade -y
       sudo apt-get install -y docker.io
       sudo usermod -aG docker vagrant
       sudo systemctl enable docker
@@ -135,9 +132,9 @@ end
       # Remova o contêiner existente, se houver
       sudo docker stop ftp || true
       sudo docker rm ftp || true
+      sudo docker pull bogem/ftp
+      sudo docker run -d -v ftp:/home/vsftpd -p 20:20 -p 21:21 -p 47400-47470:47400-47470 -e FTP_USER=teste -e FTP_PASS=teste -e PASV_ADDRESS=172.17.0.2 --name ftp_server --restart=always bogem/ftp
 
-      sudo docker pull fauria/vsftpd
-      sudo docker run -d --name ftp -p 2121:21 -v /vagrant/ftp:/home/vsftpd --restart always fauria/vsftpd
     SHELL
   end
 
