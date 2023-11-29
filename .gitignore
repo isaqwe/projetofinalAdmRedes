@@ -18,3 +18,4 @@
 .vagrant/machines/ftp/virtualbox/synced_folders
 .vagrant/machines/ftp/virtualbox/vagrant_cwd
 .vagrant
+.Vagrantfile.swp
