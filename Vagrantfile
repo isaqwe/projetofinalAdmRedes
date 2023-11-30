@@ -33,6 +33,7 @@ config.vm.define "dns" do |dns|
   dns.vm.box = "ubuntu/focal64"
   dns.vm.network "private_network", type: "dhcp"
   dns.vm.network "forwarded_port", guest: 53, host: 8053, protocol: "udp" # Porta 30053 no host
+  dns.vm.hostname="dns"
 
   dns.vm.provision "shell", inline: <<-SHELL
     sudo apt-get update
