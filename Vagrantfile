@@ -32,7 +32,7 @@ Vagrant.configure("2") do |config|
 config.vm.define "dns" do |dns|
   dns.vm.box = "ubuntu/focal64"
   dns.vm.network "private_network", type: "dhcp"
-  dns.vm.network "forwarded_port", guest: 53, host: 30053, protocol: "udp" # Porta 30053 no host
+  dns.vm.network "forwarded_port", guest: 53, host: 8053, protocol: "udp" # Porta 30053 no host
 
   dns.vm.provision "shell", inline: <<-SHELL
     sudo apt-get update
@@ -42,40 +42,11 @@ config.vm.define "dns" do |dns|
     sudo systemctl start docker
 
     # Remova o contêiner existente, se houver
-    sudo docker stop bind9-container || true
-    sudo docker rm bind9-container || true
-    sudo docker pull ubuntu/bind9
+    sudo docker stop dns-container || true
+    sudo docker rm dns-container || true
     # Baixe e inicie o contêiner BIND9
-    sudo docker run -d --name bind9-container -e TZ=UTC -p 30053:53 ubuntu/bind9
+    sudo docker run -d --name dns-container -p 8053:53/udp --restart always sameersbn/bind:latest
 
-    # Aguarde o serviço DNS iniciar completamente (pode levar alguns segundos)
-    sleep 10
-
-    # Instale o utilitário dnsutils no contêiner
-    sudo docker exec bind9-container apt-get update
-    sudo docker exec bind9-container apt-get install -y dnsutils
-
-    # Configuração da zona example.com
-    sudo docker exec bind9-container tee /etc/bind/named.conf.local << EOF
-zone "example.com" {
-  type master;
-  file "/etc/bind/db.example.com";
-};
-EOF
-
-    sudo docker exec bind9-container tee /etc/bind/db.example.com << EOF
-\$TTL    86400
-@       IN      SOA     ns1.example.com. admin.example.com. (
-                2023112801   ; Serial
-                3600         ; Refresh
-                1800         ; Retry
-                604800       ; Expire
-                86400 )      ; Negative Cache TTL
-;
-@       IN      NS      ns1.example.com.
-@       IN      A       93.184.216.34
-ns1     IN      A       93.184.216.34
-EOF
 
   SHELL
 end
