@@ -97,6 +97,9 @@ O escopo deste projeto abrange o design, implementação e gerenciamento de uma 
 **Linux:**
 O ambiente de rede é baseado em tecnologia Linux, indicando que os servidores e serviços serão configurados em sistemas operacionais Linux.
 
+**Virtualbox:**
+Ambiente que possibilita emular uma maquima de maneira virtualizada dentro de outro maquina.
+
 **Vagrant:**
 Utilizado para criar máquinas virtuais, permitindo a replicação do ambiente de rede de maneira rápida e consistente.
 
@@ -124,16 +127,28 @@ Essas tecnologias foram escolhidas para criar um ambiente Linux eficiente, autom
 
 ### 2. Topologia de Rede
 
-**Descrição Geral da Topologia**
+**Descrição Geral da Topologia:**
 A topologia utilizada foi a topologia estrela, onde a VM DHCP foi utilizada como centro para atribuir o ip para todas as maquinas da rede, sendo assim todas as maquinas estão ligadas a ela.
-**Segmentação de Sub-redes**
-   - Sub-rede para DHCP
-   - Sub-rede para DNS
-   - Sub-rede para Web
-   - Sub-rede para FTP
-   - Sub-rede para NFS
+**Segmentação de Sub-redes:**
+    Rede Local (LAN): As VMs (dhcp, dns, web, ftp, nfs) estão todas na mesma rede local (LAN) com a faixa de endereços IP 192.168.56.0/24. Essa rede é gerenciada pelo servidor DHCP.
+    
+    Servidor DHCP (dhcp): Fornece endereços IP para as outras VMs na rede local.
+
+    Servidor DNS (dns): Gerencia o serviço DNS e é acessível a partir do host na porta 8053, encaminhada para a porta 53/udp do contêiner.
+
+    Servidor Web (web): Executa um servidor Apache e é acessível a partir do host na porta 8080, encaminhada para a porta 80 do contêiner.
+
+    Servidor FTP (ftp): Executa um servidor FTP e está acessível a partir do host nas portas 20 e 21, além de um intervalo de portas passivas.
+
+    Servidor NFS (nfs): Configurado como um servidor NFS e está acessível a partir do host na porta 2049, encaminhada para a porta 2049 do contêiner.
+
+
 
 ### 3. Implementação
+Para executar o projeto é necessário que a maquina host que ira executar tenha o **virtualbox** instalado, caso não haja deve-se executar no terminal o seguinte comando:
+```bash
+sudo apt-get install -y virtualbox
+```
 Para implementação do projeto basta clonar este repositório, e dentro da pasta do repositorio usando o terminal executar o seguinte comando:
 ```bash
 vagrant up
@@ -184,83 +199,29 @@ Após isso, para acessar as vm's criadas é necessáio a execução do comando:
 
 ### 5. Ferramentas Utilizadas
 
-#### Vagrant
+- #### Vagrant
+- #### Docker
+- #### Virtualbox
 
-**VM DHCP:**
-- Box: ubuntu/focal64
-- Configuração do servidor DHCP usando Docker e a imagem networkboot/dhcpd.
-- Copia um arquivo de configuração dhcpd.conf para o diretório temporário /tmp e inicia um contêiner Docker usando esse arquivo.
-
-**VM DNS:**
-- Box: ubuntu/focal64
-- Instala e configura o BIND9 para atuar como um servidor DNS.
-- Define uma zona DNS para "example.com" e cria um arquivo de zona correspondente.
-
-**VM WEB:**
-- Box: ubuntu/focal64
-- Instala e configura o Apache2.
-- Cria uma página HTML simples para testar o servidor web.
-
-**VM FTP:**
-- Box: ubuntu/focal64
-- Configura um servidor FTP usando Docker e a imagem fauria/vsftpd.
-- Mapeia portas para o FTP (21, 2121, 20000, 20001) e monta o diretório /vagrant/ftp no contêiner.
-
-**VM NFS (Servidor):**
-- Box: ubuntu/focal64
-- Configura um servidor NFS (Network File System).
-
-#### Docker
-
-**Imagens Docker Utilizadas:**
-
-[networkboot/dhcpd](https://hub.docker.com/r/networkboot/dhcpd)
-
-[fauria/vsftpd](https://hub.docker.com/r/fauria/vsftpd)
-
-**Comandos Docker Utilizados:**
-
-```bash
- sudo docker stop <nome do container>
- sudo docker rm <nome do container>
-
-```
-Sendo estes utlizados para parar o container e excluir o container, evitando assim algum erro caso haja algum container com o mesmo nome do serviço que irá rodar pelo Docker.
-
-```bash
- sudo docker run -d --name dhcp --network host -v /tmp:/data networkboot/dhcpd
- sudo docker run -d --name ftp -p 2121:21 -v /vagrant/ftp:/home/vsftpd --restart always fauria/vsftpd
-
-```
-Foram usadas também na VM DHCP e FTP respectivamente os codigos docker acima, para que o container fosse criado e já direcioando aos seus locais para que funcionassem bem, para as configurações das maquinas.
 
 ### 6. Testes Extensivos
-
-**VM DHCP:**
-- Acesse a VM DHCP com vagrant ssh dhcp.
-- Execute sudo docker logs dhcp para verificar os logs do contêiner DHCP.
-- Verifique se as configurações do DHCP estão corretas no arquivo dhcpd.conf e se o contêiner DHCP está em execução.
-
-**VM DNS:**
-- Acesse a VM DNS com vagrant ssh dns.
-- Execute sudo systemctl status bind9 para verificar o status do serviço BIND9.
-- Verifique os logs do BIND9 em /var/log/syslog ou /var/log/bind/ para mensagens de erro ou informações.
-
-**VM WEB (Apache):**
-- Acesse a VM WEB com vagrant ssh web.
-- Execute sudo systemctl status apache2 para verificar o status do serviço Apache.
-- Abra um navegador e acesse http://localhost:8080 para verificar se a página "Hello from Apache on Vagrant!" está sendo exibida.
-
-**VM FTP:**
-- Acesse a VM FTP com vagrant ssh ftp.
-- Execute sudo docker logs ftp para verificar os logs do contêiner FTP.
-- Use um cliente FTP (por exemplo, FileZilla) para se conectar ao servidor FTP na máquina host usando as portas 2121, 21, 20000 e 20001.
-
-**VM NFS (Servidor):**
-- Acesse a VM NFS com vagrant ssh nfs.
-- Execute sudo systemctl status nfs-kernel-server para verificar o status do serviço NFS.
-- Execute showmount -e localhost para verificar se há compartilhamentos NFS configurados.
-
+Para dentro de suas respectivas vms foram executados o comando:
+```bash 
+docker logs <nome do container>
+``````
+para que fosse analisado log do docker e saber se os serviços estão funcionando e se estão realizando o que deveriam fazer, além de outros testes como no **DNS** onde foi executado o comando:
+```
+dig @localhost -p 8053 example.com
+```
+para verificar a resolução do DNS e no **FTP** foi utlizado o camando:
+```
+ftp <ip do host ftp>
+```
+para testar o **WEB** foi utilizado o comando:
+```
+wget <ip da maquina: porta de saida>
+```
+onde baixou o arquivo. Nas maquinas DHCP e NFS só foram realizado a analise dos logs para verificar que tudo estivesse correndo como o esperado.
 ### 7. Git Repository
 
 **Estrutura do Repositorio:**
