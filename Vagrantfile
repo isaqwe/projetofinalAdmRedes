@@ -33,7 +33,6 @@ config.vm.define "dns" do |dns|
   dns.vm.box = "ubuntu/focal64"
   dns.vm.network "private_network", type: "dhcp"
   dns.vm.network "forwarded_port", guest: 53, host: 8053, protocol: "udp" # Porta 30053 no host
-  dns.vm.hostname="dns"
 
   dns.vm.provision "shell", inline: <<-SHELL
     sudo apt-get update
@@ -42,11 +41,35 @@ config.vm.define "dns" do |dns|
     sudo systemctl enable docker
     sudo systemctl start docker
 
+    echo 'acl goodclients {
+    192.168.0.0/16;
+    localhost;
+    localnets;
+};
+
+options {
+    directory "/var/cache/bind";
+
+    // ... outras configurações ...
+
+    allow-query { goodclients; };
+    recursion yes;  // ou no, dependendo dos seus requisitos
+
+    //========================================================================
+    // If BIND logs error messages about the root key being expired,
+    // you will need to update your keys.  See https://www.isc.org/bind-keys
+    //========================================================================
+    dnssec-validation auto;
+
+    listen-on-v6 { any; };
+};' | sudo tee named.conf.options
+    sudo chmod 777 named.conf.options
     # Remova o contêiner existente, se houver
     sudo docker stop dns-container || true
     sudo docker rm dns-container || true
     # Baixe e inicie o contêiner BIND9
     sudo docker run -d --name dns-container -p 8053:53/udp --restart always sameersbn/bind:latest
+    sudo docker cp named.conf.options dns-container:/etc/bind/named.conf.options
 
 
   SHELL
@@ -71,8 +94,7 @@ end
     # Puxa a imagem do Apache
    sudo docker pull httpd
     ##docker run -d --name web httpd
-      sudo docker stop web || true
-      sudo docker rm web || true
+
     # Executa o contêiner Apache em modo daemon
     sudo docker run -d --name web -p 8080:80 httpd
     #docker run -dit --name web -p 8080:80 -v "$PWD":/usr/local/apache2/htdocs/ httpd:2.4
@@ -116,7 +138,7 @@ end
     nfs.vm.box = "ubuntu/focal64"
     nfs.vm.hostname = "nfs"
     nfs.vm.network "private_network", type:"dhcp"
-    nfs.vm.network "forwarded_port", guest: 2048, host: 2048
+    nfs.vm.network "forwarded_port", guest: 2049, host: 2049
     nfs.vm.synced_folder "./nfs-share", "/vagrant/nfs-share"
     nfs.vm.provision "shell", inline: <<-SHELL
       sudo apt-get update
@@ -128,7 +150,7 @@ end
       sudo docker stop nfs-server || true
       sudo docker rm nfs-server || true
       sudo docker pull itsthenetwork/nfs-server-alpine
-      sudo docker run -id --name nfs-server --privileged -v /path/to/vagrant/project/nfs-share:/export -e SHARED_DIRECTORY=/export -p 2048:2048/tcp -p 2048:2048/udp itsthenetwork/nfs-server-alpine /bin/sh
+      sudo docker run -id --name nfs-server --privileged -v /path/to/vagrant/project/nfs-share:/export -e SHARED_DIRECTORY=/export -p 2049:2049/tcp -p 2049:2049/udp itsthenetwork/nfs-server-alpine /bin/sh
       
 
 
